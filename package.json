@@ -1,7 +1,7 @@
 {
-  "name": "babel-plugin-i18next-extract",
+  "name": "alvin-babel-plugin-i18next-extract-modified",
   "version": "0.1.0",
-  "description": "Statically extract translation keys from i18next application.",
+  "description": "Statically extract translation keys from i18next application. Modified with php exporter for WordPress translation",
   "engines": {
     "node": ">=10.0.0"
   },
@@ -71,7 +71,7 @@
   "scripts": {
     "lint": "eslint --ext=.ts,.js,.tsx,.jsx src docs tests rollup.config.js",
     "types": "tsc --noEmit",
-    "build": "${npm_execpath} run build:clean && ${npm_execpath} run build:skeleton && ${npm_execpath} run build:types && ${npm_execpath} run build:js",
+    "build": "run build:js",
     "build:clean": "rimraf lib/",
     "build:skeleton": "copyfiles package.json README.md LICENSE lib/",
     "build:types": "tsc --emitDeclarationOnly -p tsconfig.build.json",

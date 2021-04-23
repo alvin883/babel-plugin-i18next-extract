@@ -1,6 +1,9 @@
 import { resolve } from 'path';
 
 export interface Config {
+  __usePhp: boolean;
+  __themedomain: string;
+
   // config options that are common with i18next
   locales: string[];
   defaultNS: string;
@@ -83,7 +86,7 @@ export function parseConfig(opts: Partial<Config>): Config {
         ? opts.outputPath
         : coalesce(
             opts.outputPath,
-            './extractedTranslations/{{locale}}/{{ns}}.json',
+            './extractedTranslations/{{locale}}/{{ns}}.php',
           ),
     defaultValue: coalesce(opts.defaultValue, ''),
     useI18nextDefaultValue: coalesce(

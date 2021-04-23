@@ -1,13 +1,14 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-import deepmerge from 'deepmerge';
+import deepmerge from "deepmerge";
 
-import { Config } from '../config';
-import { TranslationKey } from '../keys';
+import { Config } from "../config";
+import { TranslationKey } from "../keys";
 
-import { ConflictError, Exporter, ExportError } from './commons';
-import jsonv3Exporter from './jsonv3';
+import { ConflictError, Exporter, ExportError } from "./commons";
+import jsonv3Exporter from "./jsonv3";
+import phpExporter from "./php";
 
 export { ConflictError, ExportError };
 
@@ -44,13 +45,13 @@ function loadTranslationFile<F>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   exporter: Exporter<F, any>,
   config: Config,
-  filePath: string,
+  filePath: string
 ): F {
   let content: string;
   try {
-    content = fs.readFileSync(filePath, { encoding: 'utf8' });
+    content = fs.readFileSync(filePath, { encoding: "utf8" });
   } catch (err) {
-    if (err.code === 'ENOENT') return exporter.init({ config });
+    if (err.code === "ENOENT") return exporter.init({ config });
     throw err;
   }
 
@@ -63,7 +64,7 @@ function loadTranslationFile<F>(
 function getDefaultValue(
   key: TranslationKey,
   locale: string,
-  config: Config,
+  config: Config
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   let defaultValue = config.defaultValue;
@@ -110,7 +111,7 @@ export default function exportTranslationKeys(
   keys: TranslationKey[],
   locale: string,
   config: Config,
-  cache: ExporterCache,
+  cache: ExporterCache
 ): void {
   const keysPerFilepath: { [path: string]: TranslationKey[] } = {};
 
@@ -119,11 +120,11 @@ export default function exportTranslationKeys(
   for (const key of keys) {
     // Figure out in which path each key should go.
     const filePath =
-      typeof config.outputPath === 'function'
+      typeof config.outputPath === "function"
         ? config.outputPath(locale, key.ns)
         : config.outputPath
-            .replace('{{locale}}', locale)
-            .replace('{{ns}}', key.ns);
+            .replace("{{locale}}", locale)
+            .replace("{{ns}}", key.ns);
 
     keysPerFilepath[filePath] = [...(keysPerFilepath[filePath] || []), key];
   }
@@ -135,7 +136,7 @@ export default function exportTranslationKeys(
       {
         // Overwrites the existing array values completely rather than concatenating them
         arrayMerge: (dest, source) => source,
-      },
+      }
     );
 
     const originalTranslationFile = cache.originalTranslationFiles[filePath];
@@ -169,15 +170,29 @@ export default function exportTranslationKeys(
     const directoryPath = path.dirname(filePath);
 
     fs.mkdirSync(directoryPath, { recursive: true });
-    fs.writeFileSync(
-      filePath,
-      exporter.stringify({
-        config,
-        file: translationFile,
-      }),
-      {
-        encoding: 'utf8',
-      },
-    );
+
+    if (config.__usePhp) {
+      fs.writeFileSync(
+        directoryPath + "",
+        phpExporter.stringify({
+          config,
+          file: translationFile,
+        }),
+        {
+          encoding: "utf8",
+        }
+      );
+    } else {
+      fs.writeFileSync(
+        filePath,
+        exporter.stringify({
+          config,
+          file: translationFile,
+        }),
+        {
+          encoding: "utf8",
+        }
+      );
+    }
   }
 }
