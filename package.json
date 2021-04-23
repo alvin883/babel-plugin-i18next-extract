@@ -1,5 +1,5 @@
 {
-  "name": "alvin-babel-plugin-i18next-extract-modified",
+  "name": "babel-plugin-alvin-i18next-extract-modified",
   "version": "0.1.1",
   "description": "Statically extract translation keys from i18next application. Modified with php exporter for WordPress translation",
   "engines": {
