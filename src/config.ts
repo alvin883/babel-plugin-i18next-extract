@@ -61,6 +61,8 @@ export function parseConfig(opts: Partial<Config>): Config {
   );
 
   return {
+    __usePhp: coalesce(opts.__usePhp, true),
+    __themedomain: coalesce(opts.__themedomain, "themedomain"),
     locales: coalesce(opts.locales, defaultLocales),
     defaultNS: coalesce(opts.defaultNS, 'translation'),
     pluralSeparator: coalesce(opts.pluralSeparator, '_'),
