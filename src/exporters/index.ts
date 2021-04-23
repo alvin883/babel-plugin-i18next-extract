@@ -173,7 +173,7 @@ export default function exportTranslationKeys(
 
     if (config.__usePhp) {
       fs.writeFileSync(
-        directoryPath + "",
+        filePath,
         phpExporter.stringify({
           config,
           file: translationFile,
